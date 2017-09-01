@@ -1,0 +1,15 @@
+1. How to associate other accounts to be able to see EC2 instances?
+2. How to create dedicated ECS account for running ECS instances?
+3. Can host ports be dynamically assigned to a Docker container, so that it can scale across existing EC2 instances? - Yes. Set host port to 0.
+4. Autoscaling not adding additiona Ec2 instances to support additional Docker containers.
+
+
+
+
+
+
+Misc notes:
+["sh","-c"]
+["/bin/sh -c \"echo '<html> <head> <title>Amazon ECS Sample App</title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now running on a container in Amazon ECS.</p> </div></body></html>' > /usr/local/apache2/htdocs/index.html && httpd-foreground\""]
+
+ssh -i "/Users/rodneydodl/Downloads/MyEastRegionKeyPair.pem" ec2-user@ec2-54-158-136-214.compute-1.amazonaws.com
