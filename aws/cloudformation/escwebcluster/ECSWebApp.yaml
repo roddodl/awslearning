@@ -93,7 +93,7 @@ Resources:
         Cpu: '10'
         Essential: 'true'
         Image: httpd:2.4
-        Memory: '300'
+        Memory: '200'
         LogConfiguration:
           LogDriver: awslogs
           Options:
@@ -208,7 +208,7 @@ Resources:
     DependsOn: ALBListener
     Properties:
       Cluster: !Ref 'ECSCluster'
-      DesiredCount: '3'
+      DesiredCount: '10'
       LoadBalancers:
       - ContainerName: simple-app
         ContainerPort: '80'
@@ -238,7 +238,7 @@ Resources:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     DependsOn: service
     Properties:
-      MaxCapacity: 2
+      MaxCapacity: 5
       MinCapacity: 1
       ResourceId: !Join ['', [service/, !Ref 'ECSCluster', /, !GetAtt [service, Name]]]
       RoleARN: !GetAtt [AutoscalingRole, Arn]
