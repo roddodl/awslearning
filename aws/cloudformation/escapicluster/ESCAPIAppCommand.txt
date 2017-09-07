@@ -1,0 +1,8 @@
+
+
+aws cloudformation create-stack --stack-name ECS-APIApp --template-body file://ECSAPIApp.yaml --parameters ParameterKey=VpcId,ParameterValue=vpc-ed003294 ParameterKey=SubnetId,ParameterValue=\"subnet-91abf0cb,subnet-40bf6324\" ParameterKey=KeyName,ParameterValue=MyEastRegionKeyPair --capabilities CAPABILITY_IAM
+
+
+
+
+ --disable-rollback

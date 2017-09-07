@@ -18,11 +18,21 @@
       "Type" : "String",
       "Description" : "Optional - CIDR/IP range for the VPC",
       "Default" : "10.0.0.0/24"
-  },
+    },
     "SubnetCidrBlock2" : {
       "Type" : "String",
       "Description" : "Optional - CIDR/IP range for the VPC",
       "Default" : "10.0.1.0/24"
+    },
+    "SubnetCidrBlock3" : {
+      "Type" : "String",
+      "Description" : "Optional - CIDR/IP range for the VPC",
+      "Default" : "10.0.7.0/24"
+    },
+    "SubnetCidrBlock4" : {
+      "Type" : "String",
+      "Description" : "Optional - CIDR/IP range for the VPC",
+      "Default" : "10.0.8.0/24"
     }
   },
 
@@ -71,6 +81,26 @@
       }
     },
 
+    "PubSubnetAz3" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "CidrBlock" : { "Ref" : "SubnetCidrBlock3" },
+        "AvailabilityZone" : "us-east-1b"
+         
+      }
+    },
+
+    "PubSubnetAz4" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "Vpc" },
+        "CidrBlock" : { "Ref" : "SubnetCidrBlock4" },
+        "AvailabilityZone" : "us-east-1c"
+      }
+    },
+
+
     "InternetGateway" : {
       "Type" : "AWS::EC2::InternetGateway"
     },
@@ -114,8 +144,23 @@
         "SubnetId" : { "Ref" : "PubSubnetAz2" },
         "RouteTableId" : { "Ref" : "RouteViaIgw" }
       }
-    }
+    },
 
+    "PubSubnet3RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnetAz3" },
+        "RouteTableId" : { "Ref" : "RouteViaIgw" }
+      }
+    },
+
+    "PubSubnet4RouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PubSubnetAz4" },
+        "RouteTableId" : { "Ref" : "RouteViaIgw" }
+      }
+    }
   },
 
   "Outputs" : {

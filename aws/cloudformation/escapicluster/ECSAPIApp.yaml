@@ -89,49 +89,25 @@ Resources:
     Properties:
       Family: !Join ['', [!Ref 'AWS::StackName', -ecs-demo-app]]
       ContainerDefinitions:
-      - Name: simple-app
+      - Name: spring-api
         Cpu: '10'
         Essential: 'true'
-        Image: httpd:2.4
-        Memory: '200'
+        Image: 219268719870.dkr.ecr.us-east-1.amazonaws.com/arpoc-repository:sample-spring-boot-service
+        Memory: '400'
         LogConfiguration:
           LogDriver: awslogs
           Options:
             awslogs-group: !Ref 'CloudwatchLogsGroup'
             awslogs-region: !Ref 'AWS::Region'
             awslogs-stream-prefix: ecs-demo-app
-        MountPoints:
-        - ContainerPath: /usr/local/apache2/htdocs
-          SourceVolume: my-vol
         PortMappings:
-        - ContainerPort: 80
-      - Name: busybox
-        Cpu: 10
-        Command: ['/bin/sh -c "while true; do echo ''<html> <head> <title>Amazon ECS
-            Sample App</title> <style>body {margin-top: 40px; background-color: #333;}
-            </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon
-            ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now
-            running on a container in Amazon ECS.</p>'' > top; /bin/date > date ;
-            echo ''</div></body></html>'' > bottom; cat top date bottom > /usr/local/apache2/htdocs/index.html
-            ; sleep 1; done"']
-        EntryPoint: [sh, -c]
-        Essential: false
-        Image: busybox
-        Memory: 200
-        LogConfiguration:
-          LogDriver: awslogs
-          Options:
-            awslogs-group: !Ref 'CloudwatchLogsGroup'
-            awslogs-region: !Ref 'AWS::Region'
-            awslogs-stream-prefix: ecs-demo-app
-        VolumesFrom:
-        - SourceContainer: simple-app
+        - ContainerPort: 8091
       Volumes:
       - Name: my-vol
   ECSALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: ECSALB
+      Name: ECSALB-APIAPP
       Scheme: internet-facing
       LoadBalancerAttributes:
       - Key: idle_timeout.timeout_seconds
@@ -169,7 +145,7 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      Name: ECSTG
+      Name: ECSTG-API
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
@@ -210,7 +186,7 @@ Resources:
       Cluster: !Ref 'ECSCluster'
       DesiredCount: '3'
       LoadBalancers:
-      - ContainerName: simple-app
+      - ContainerName: api-app
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       Role: !Ref 'ECSServiceRole'
@@ -226,7 +202,7 @@ Resources:
           Action: ['sts:AssumeRole']
       Path: /
       Policies:
-      - PolicyName: ecs-service
+      - PolicyName: ecs-api-service
         PolicyDocument:
           Statement:
           - Effect: Allow
@@ -247,7 +223,7 @@ Resources:
   ServiceScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
-      PolicyName: AStepPolicy
+      PolicyName: AStepPolicy-API
       PolicyType: StepScaling
       ScalingTargetId: !Ref 'ServiceScalingTarget'
       StepScalingPolicyConfiguration:
@@ -268,7 +244,7 @@ Resources:
       AlarmActions: [!Ref 'ServiceScalingPolicy']
       Namespace: AWS/ApplicationELB
       Dimensions:
-      - Name: ECSService
+      - Name: ECSService-API
         Value: !Ref 'service'
       ComparisonOperator: GreaterThanThreshold
       MetricName: HTTPCode_ELB_5XX_Count
@@ -283,7 +259,7 @@ Resources:
           Action: ['sts:AssumeRole']
       Path: /
       Policies:
-      - PolicyName: ecs-service
+      - PolicyName: ecs-api-service
         PolicyDocument:
           Statement:
           - Effect: Allow
@@ -302,7 +278,7 @@ Resources:
           Action: ['sts:AssumeRole']
       Path: /
       Policies:
-      - PolicyName: service-autoscaling
+      - PolicyName: service-autoscaling-api
         PolicyDocument:
           Statement:
           - Effect: Allow

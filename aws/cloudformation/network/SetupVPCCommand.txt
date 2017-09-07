@@ -1,2 +1,5 @@
 
 aws cloudformation create-stack --stack-name Network-VPC --template-body file://SetupVPC.json
+
+
+aws cloudformation update-stack --stack-name Network-VPC --template-body file://SetupVPC.json
